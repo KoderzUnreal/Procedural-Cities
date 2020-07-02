@@ -11,18 +11,18 @@ unsigned int AProcMeshActor::workersWorking{ 0 };
 AProcMeshActor::AProcMeshActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	exteriorMesh = CreateDefaultSubobject<URuntimeMeshComponent>(TEXT("exteriorMesh"));
-	sndExteriorMesh = CreateDefaultSubobject<URuntimeMeshComponent>(TEXT("sndExteriorMesh"));
-	interiorMesh = CreateDefaultSubobject<URuntimeMeshComponent>(TEXT("interiorMesh"));
-	windowMesh = CreateDefaultSubobject<URuntimeMeshComponent>(TEXT("windowMesh"));
-	windowFrameMesh = CreateDefaultSubobject<URuntimeMeshComponent>(TEXT("windowFrameMesh"));
-	occlusionWindowMesh = CreateDefaultSubobject<URuntimeMeshComponent>(TEXT("occlusionWindowMesh"));
-	floorMesh = CreateDefaultSubobject<URuntimeMeshComponent>(TEXT("floorMesh"));
-	roofMesh = CreateDefaultSubobject<URuntimeMeshComponent>(TEXT("roofMesh"));
-	greenMesh = CreateDefaultSubobject<URuntimeMeshComponent>(TEXT("greenMesh"));
-	concreteMesh = CreateDefaultSubobject<URuntimeMeshComponent>(TEXT("concreteMesh"));
-	roadMiddleMesh = CreateDefaultSubobject<URuntimeMeshComponent>(TEXT("roadMiddleMesh"));
-	asphaltMesh = CreateDefaultSubobject<URuntimeMeshComponent>(TEXT("asphaltMesh"));
+	exteriorMesh = CreateDefaultSubobject<URuntimeMeshComponentStatic>(TEXT("exteriorMesh"));
+	sndExteriorMesh = CreateDefaultSubobject<URuntimeMeshComponentStatic>(TEXT("sndExteriorMesh"));
+	interiorMesh = CreateDefaultSubobject<URuntimeMeshComponentStatic>(TEXT("interiorMesh"));
+	windowMesh = CreateDefaultSubobject<URuntimeMeshComponentStatic>(TEXT("windowMesh"));
+	windowFrameMesh = CreateDefaultSubobject<URuntimeMeshComponentStatic>(TEXT("windowFrameMesh"));
+	occlusionWindowMesh = CreateDefaultSubobject<URuntimeMeshComponentStatic>(TEXT("occlusionWindowMesh"));
+	floorMesh = CreateDefaultSubobject<URuntimeMeshComponentStatic>(TEXT("floorMesh"));
+	roofMesh = CreateDefaultSubobject<URuntimeMeshComponentStatic>(TEXT("roofMesh"));
+	greenMesh = CreateDefaultSubobject<URuntimeMeshComponentStatic>(TEXT("greenMesh"));
+	concreteMesh = CreateDefaultSubobject<URuntimeMeshComponentStatic>(TEXT("concreteMesh"));
+	roadMiddleMesh = CreateDefaultSubobject<URuntimeMeshComponentStatic>(TEXT("roadMiddleMesh"));
+	asphaltMesh = CreateDefaultSubobject<URuntimeMeshComponentStatic>(TEXT("asphaltMesh"));
 	SetActorTickEnabled(false);
 
 }
@@ -47,8 +47,8 @@ AProcMeshActor::~AProcMeshActor()
 
 
 
-bool AProcMeshActor::buildPolygons(TArray<FPolygon> &pols, FVector offset, URuntimeMeshComponent* mesh, UMaterialInterface *mat) {
-	if (mesh->GetNumSections() > 0 || pols.Num() == 0) {
+bool AProcMeshActor::buildPolygons(TArray<FPolygon> &pols, FVector offset, URuntimeMeshComponentStatic* mesh, UMaterialInterface *mat) {
+	if (mesh->GetLastSectionId(0) != INDEX_NONE || pols.Num() == 0) {
 		return false;
 	}
 
@@ -106,8 +106,8 @@ bool AProcMeshActor::buildPolygons(TArray<FPolygon> &pols, FVector offset, URunt
 
 
 
-	mesh->SetMaterial(0, mat);
-	mesh->CreateMeshSection(0, vertices, triangles, normals, UV, vertexColors, tangents, proceduralMeshesCollision, EUpdateFrequency::Infrequent);
+	mesh->SetupMaterialSlot(0, TEXT("MeshMat"), mat);
+	mesh->CreateSectionFromComponents(0, 0, 0, vertices, triangles, normals, UV, vertexColors, tangents, ERuntimeMeshUpdateFrequency::Infrequent, proceduralMeshesCollision);
 
 
 	return true;
@@ -117,19 +117,19 @@ bool AProcMeshActor::buildPolygons(TArray<FPolygon> &pols, FVector offset, URunt
 
 bool AProcMeshActor::clearMeshes(bool fullReplacement) {
 	if (fullReplacement) {
-		exteriorMesh->ClearAllMeshSections();
-		sndExteriorMesh->ClearAllMeshSections();
-		greenMesh->ClearAllMeshSections();
-		concreteMesh->ClearAllMeshSections();
-		roofMesh->ClearAllMeshSections();
+		exteriorMesh->RemoveAllSectionsForLOD(0);
+		sndExteriorMesh->RemoveAllSectionsForLOD(0);
+		greenMesh->RemoveAllSectionsForLOD(0);
+		concreteMesh->RemoveAllSectionsForLOD(0);
+		roofMesh->RemoveAllSectionsForLOD(0);
 	}
-	interiorMesh->ClearAllMeshSections();
-	windowMesh->ClearAllMeshSections();
-	windowFrameMesh->ClearAllMeshSections();
-	occlusionWindowMesh->ClearAllMeshSections();
-	floorMesh->ClearAllMeshSections();
-	roadMiddleMesh->ClearAllMeshSections();
-	asphaltMesh->ClearAllMeshSections();
+	interiorMesh->RemoveAllSectionsForLOD(0);
+	windowMesh->RemoveAllSectionsForLOD(0);
+	windowFrameMesh->RemoveAllSectionsForLOD(0);
+	occlusionWindowMesh->RemoveAllSectionsForLOD(0);
+	floorMesh->RemoveAllSectionsForLOD(0);
+	roadMiddleMesh->RemoveAllSectionsForLOD(0);
+	asphaltMesh->RemoveAllSectionsForLOD(0);
 	return true;
 }
 
