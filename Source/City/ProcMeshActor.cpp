@@ -48,7 +48,7 @@ AProcMeshActor::~AProcMeshActor()
 
 
 bool AProcMeshActor::buildPolygons(TArray<FPolygon> &pols, FVector offset, URuntimeMeshComponentStatic* mesh, UMaterialInterface *mat) {
-	if (mesh->GetLastSectionId(0) != INDEX_NONE || pols.Num() == 0) {
+	if (mesh->DoesSectionHaveValidMeshData(0, 0) || pols.Num() == 0) {
 		return false;
 	}
 
